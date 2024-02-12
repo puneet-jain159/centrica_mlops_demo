@@ -74,7 +74,7 @@ dbutils.widgets.text("targets", "fare_amount", "Targets")
 dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
 dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
 dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
-dbutils.widgets.text("model_name", "dev.centrica_mlops_demo.centrica_mlops_demo-model", "Full (Three-Level) Model Name")
+dbutils.widgets.text("model_name", "mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model", "Full (Three-Level) Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
@@ -121,9 +121,9 @@ experiment_name = dbutils.widgets.get("experiment_name")
 mlflow.set_experiment(experiment_name)
 
 # set model evaluation parameters that can be inferred from the job
-model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
-model_name = dbutils.jobs.taskValues.get("Train", "model_name", debugValue="")
-model_version = dbutils.jobs.taskValues.get("Train", "model_version", debugValue="")
+model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="models:/mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model/1")
+model_name = dbutils.jobs.taskValues.get("Train", "model_name", debugValue="mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model")
+model_version = dbutils.jobs.taskValues.get("Train", "model_version", debugValue="1")
 
 if model_uri == "":
     model_name = dbutils.widgets.get("model_name")
@@ -215,7 +215,7 @@ def log_to_model_description(run, success):
 # COMMAND ----------
 
 training_run = get_training_run(model_name, model_version)
-
+dry_run = None
 # run evaluate
 with mlflow.start_run(
     run_name=generate_run_name(training_run),
@@ -286,3 +286,7 @@ with mlflow.start_run(
             print(
                 "Model validation failed in DRY_RUN. It will not block model deployment."
             )
+
+# COMMAND ----------
+
+

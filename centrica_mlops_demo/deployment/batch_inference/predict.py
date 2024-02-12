@@ -29,4 +29,4 @@ def predict_batch(
     output_df.display()
     # Model predictions are written to the Delta table provided as input.
     # Delta is the default format in Databricks Runtime 8.0 and above.
-    output_df.write.format("delta").mode("overwrite").saveAsTable(output_table_name)
+    output_df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(output_table_name)
