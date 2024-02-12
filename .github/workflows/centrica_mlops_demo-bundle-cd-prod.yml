@@ -6,7 +6,7 @@ name: Bundle Deployment for centrica_mlops_demo Prod
 
 on:
   push:
-    tags: [ 'release*','v*.']
+    tags: [ 'release*','v*']
   workflow_dispatch:
 
 defaults:
