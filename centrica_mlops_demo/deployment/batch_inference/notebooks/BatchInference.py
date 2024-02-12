@@ -23,12 +23,12 @@
 # Name of the current environment
 dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 # A Hive-registered Delta table containing the input features.
-dbutils.widgets.text("input_table_name", "", label="Input Table Name")
+dbutils.widgets.text("input_table_name", "mlops_pj.dev_centrica_mlops_demo.feature_store_inference_input", label="Input Table Name")
 # Delta table to store the output predictions.
-dbutils.widgets.text("output_table_name", "", label="Output Table Name")
+dbutils.widgets.text("output_table_name", "mlops_pj.dev_centrica_mlops_demo.predictions", label="Output Table Name")
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.centrica_mlops_demo.centrica_mlops_demo-model", label="Full (Three-Level) Model Name"
+    "model_name", "mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model", label="Full (Three-Level) Model Name"
 )
 
 # COMMAND ----------
@@ -85,9 +85,13 @@ from datetime import datetime
 ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # COMMAND ----------
-# DBTITLE 1,Load model and run inference
 
+# DBTITLE 1,Load model and run inference
 from predict import predict_batch
 
 predict_batch(spark, model_uri, input_table_name, output_table_name, model_version, ts)
+
+
+# COMMAND ----------
+
 dbutils.notebook.exit(output_table_name)

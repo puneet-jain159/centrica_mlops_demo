@@ -45,7 +45,7 @@ dbutils.widgets.text(
 # Feature table to store the computed features.
 dbutils.widgets.text(
     "output_table_name",
-    "dev.centrica_mlops_demo.trip_pickup_features",
+    "mlops_pj.dev_centrica_mlops_demo.trip_dropoff_features",
     label="Output Feature Table Name",
 )
 
@@ -69,8 +69,8 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 
 
 # COMMAND ----------
-# DBTITLE 1,Define input and output variables
 
+# DBTITLE 1,Define input and output variables
 input_table_path = dbutils.widgets.get("input_table_path")
 output_table_name = dbutils.widgets.get("output_table_name")
 input_start_date = dbutils.widgets.get("input_start_date")
@@ -86,19 +86,19 @@ assert output_table_name != "", "output_table_name notebook parameter must be sp
 output_database = output_table_name.split(".")[0]
 
 # COMMAND ----------
-# DBTITLE 1,Create database.
 
+# DBTITLE 1,Create database.
 spark.sql("CREATE DATABASE IF NOT EXISTS " + output_database)
 
 # COMMAND ----------
-# DBTITLE 1, Read input data.
 
+# DBTITLE 1, Read input data.
 raw_data = spark.read.format("delta").load(input_table_path)
 
 
 # COMMAND ----------
-# DBTITLE 1,Compute features.
 
+# DBTITLE 1,Compute features.
 # Compute the features. This is done by dynamically loading the features module.
 from importlib import import_module
 
@@ -113,8 +113,8 @@ features_df = compute_features_fn(
 )
 
 # COMMAND ----------
-# DBTITLE 1, Write computed features.
 
+# DBTITLE 1, Write computed features.
 from databricks import feature_store
 
 fs = feature_store.FeatureStoreClient()
@@ -137,3 +137,7 @@ fs.write_table(
 )
 
 dbutils.notebook.exit(0)
+
+# COMMAND ----------
+
+

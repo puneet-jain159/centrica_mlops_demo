@@ -25,7 +25,7 @@
 # Provide them via DB widgets or notebook arguments.
 #
 # Name of the current environment
-dbutils.widgets.dropdown("env", "None", ["None", "staging", "prod"], "Environment Name")
+dbutils.widgets.dropdown("env", "dev", ["dev", "staging", "prod"], "Environment Name")
 
 # COMMAND ----------
 
@@ -40,13 +40,18 @@ sys.path.append("../..")
 
 from deploy import deploy
 
-model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="")
+model_uri = dbutils.jobs.taskValues.get("Train", "model_uri", debugValue="models:/mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model/1")
 env = dbutils.widgets.get("env")
 assert env != "None", "env notebook parameter must be specified"
 assert model_uri != "", "model_uri notebook parameter must be specified"
 deploy(model_uri, env)
 
 # COMMAND ----------
+
 print(
     f"Successfully completed model deployment for {model_uri}"
 )
+
+# COMMAND ----------
+
+

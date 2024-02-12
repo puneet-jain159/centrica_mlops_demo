@@ -34,13 +34,13 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 dbutils.library.restartPython()
 
 # COMMAND ----------
-# DBTITLE 1, Notebook arguments
 
+# DBTITLE 1, Notebook arguments
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
 
 # Notebook Environment
-dbutils.widgets.dropdown("env", "staging", ["staging", "prod"], "Environment Name")
+dbutils.widgets.dropdown("env", "dev", ["dev","staging", "prod"], "Environment Name")
 env = dbutils.widgets.get("env")
 
 # Path to the Hive-registered Delta table containing the training data.
@@ -53,52 +53,52 @@ dbutils.widgets.text(
 # MLflow experiment name.
 dbutils.widgets.text(
     "experiment_name",
-    f"/dev-centrica_mlops_demo-experiment",
+    f"dev-centrica_mlops_demo-experiment",
     label="MLflow experiment name",
 )
 # Unity Catalog registered model name to use for the trained mode.
 dbutils.widgets.text(
-    "model_name", "dev.centrica_mlops_demo.centrica_mlops_demo-model", label="Full (Three-Level) Model Name"
+    "model_name", "mlops_pj.dev_centrica_mlops_demo.centrica_mlops_demo-model", label="Full (Three-Level) Model Name"
 )
 
 # Pickup features table name
 dbutils.widgets.text(
     "pickup_features_table",
-    "dev.centrica_mlops_demo.trip_pickup_features",
+    "mlops_pj.dev_centrica_mlops_demo.trip_pickup_features",
     label="Pickup Features Table",
 )
 
 # Dropoff features table name
 dbutils.widgets.text(
     "dropoff_features_table",
-    "dev.centrica_mlops_demo.trip_dropoff_features",
+    "mlops_pj.dev_centrica_mlops_demo.trip_dropoff_features",
     label="Dropoff Features Table",
 )
 
 # COMMAND ----------
-# DBTITLE 1,Define input and output variables
 
+# DBTITLE 1,Define input and output variables
 input_table_path = dbutils.widgets.get("training_data_path")
 experiment_name = dbutils.widgets.get("experiment_name")
 model_name = dbutils.widgets.get("model_name")
 
 # COMMAND ----------
-# DBTITLE 1, Set experiment
 
+# DBTITLE 1, Set experiment
 import mlflow
 
 mlflow.set_experiment(experiment_name)
 mlflow.set_registry_uri('databricks-uc')
 
 # COMMAND ----------
-# DBTITLE 1, Load raw data
 
+# DBTITLE 1, Load raw data
 raw_data = spark.read.format("delta").load(input_table_path)
 raw_data.display()
 
 # COMMAND ----------
-# DBTITLE 1, Helper functions
 
+# DBTITLE 1, Helper functions
 from datetime import timedelta, timezone
 import math
 import mlflow.pyfunc
@@ -156,14 +156,14 @@ def get_latest_model_version(model_name):
 
 
 # COMMAND ----------
-# DBTITLE 1, Read taxi data for training
 
+# DBTITLE 1, Read taxi data for training
 taxi_data = rounded_taxi_data(raw_data)
 taxi_data.display()
 
 # COMMAND ----------
-# DBTITLE 1, Create FeatureLookups
 
+# DBTITLE 1, Create FeatureLookups
 from databricks.feature_store import FeatureLookup
 import mlflow
 
@@ -192,8 +192,8 @@ dropoff_feature_lookups = [
 ]
 
 # COMMAND ----------
-# DBTITLE 1, Create Training Dataset
 
+# DBTITLE 1, Create Training Dataset
 from databricks import feature_store
 
 # End any existing runs (in the case this notebook is being run for a second time)
@@ -230,8 +230,8 @@ training_df.display()
 # MAGIC Train a LightGBM model on the data returned by `TrainingSet.to_df`, then log the model with `FeatureStoreClient.log_model`. The model will be packaged with feature metadata.
 
 # COMMAND ----------
-# DBTITLE 1, Train model
 
+# DBTITLE 1, Train model
 import lightgbm as lgb
 from sklearn.model_selection import train_test_split
 import mlflow.lightgbm
@@ -260,8 +260,8 @@ num_rounds = 100
 model = lgb.train(param, train_lgb_dataset, num_rounds)
 
 # COMMAND ----------
-# DBTITLE 1, Log model and return output.
 
+# DBTITLE 1, Log model and return output.
 # Log the trained model with MLflow and package it with feature lookup information.
 fs.log_model(
     model,
@@ -278,3 +278,7 @@ dbutils.jobs.taskValues.set("model_uri", model_uri)
 dbutils.jobs.taskValues.set("model_name", model_name)
 dbutils.jobs.taskValues.set("model_version", model_version)
 dbutils.notebook.exit(model_uri)
+
+# COMMAND ----------
+
+
