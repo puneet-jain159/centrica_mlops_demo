@@ -1,0 +1,43 @@
+# The name of the bundle. run `databricks bundle schema` to see the full bundle settings schema.
+bundle:
+  name: centrica_mlops_demo
+
+variables:
+  experiment_name:
+    description: Experiment name for the model training.
+    default: /Users/${workspace.current_user.userName}/${bundle.target}-centrica_mlops_demo-experiment
+  model_name:
+    description: Model name for the model training.
+    default: centrica_mlops_demo-model
+  catalog_name:
+    description: Catalog Name to use.
+    default: mlops_pj
+
+include:
+  # Resources folder contains ML artifact resources for the ML project that defines model and experiment
+  # And workflows resources for the ML project including model training -> validation -> deployment,
+  # feature engineering,  batch inference, data monitoring, metric refresh, alerts and triggering retraining
+  - ./resources/*.yml
+
+# Deployment Target specific values for workspace
+targets:
+  dev:  # UC Catalog Name 
+    default: true
+    workspace:
+      # TODO: add dev workspace URL
+      host:
+
+
+
+  staging:
+    workspace:
+      host: https://adb-984752964297111.11.azuredatabricks.net
+
+  prod:
+    workspace:
+      host: https://adb-984752964297111.11.azuredatabricks.net
+
+  test:
+    workspace:
+      host: https://adb-984752964297111.11.azuredatabricks.net
+
