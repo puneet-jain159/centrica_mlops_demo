@@ -1,3 +1,36 @@
+# Deployment target specific values
+targets:
+  dev:
+    resources:
+      registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "az_demo" ML Project for ${bundle.target} deployment target.
+
+  test:
+    resources:
+      registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "az_demo" ML Project for ${bundle.target} deployment target.
+
+  staging:
+    resources:
+      registered_models:
+        model:
+          comment: Registered model in Unity Catalog for the "az_demo" ML Project for ${bundle.target} deployment target.
+
+  prod:
+    resources:
+      registered_models:
+        model:
+          comment: |
+            Registered model in Unity Catalog for the "az_demo" ML Project. See the corresponding [Git repo]($#{var.git_repo_url}) for details on the project.
+            
+            Links:
+              * [Recurring model training job](https://adb-984752964297111.11.azuredatabricks.net#job/${resources.jobs.model_training_job.id}): trains fresh model versions using the latest ML code.
+              * [Recurring batch inference job](https://adb-984752964297111.11.azuredatabricks.net#job/${resources.jobs.batch_inference_job.id}): applies the latest ${bundle.target} model version for batch inference.
+      
+
+# Allow users to read the experiment 
 # Allow users to read the experiment 
 common_permissions: &permissions
   permissions:
@@ -16,8 +49,8 @@ resources:
   registered_models:
       model:
         name: ${var.model_name}
-        catalog_name: ${bundle.target}
-        schema_name: centrica_mlops_demo
+        catalog_name: ${var.catalog_name}
+        schema_name: ${bundle.target}_centrica_mlops_demo
         comment: Registered model in Unity Catalog for the "centrica_mlops_demo" ML Project for ${bundle.target} deployment target.
         <<: *grants
         depends_on:
