@@ -14,7 +14,7 @@ defaults:
     working-directory: ./centrica_mlops_demo/
 
 env:
-  DATABRICKS_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
 jobs:
   staging:

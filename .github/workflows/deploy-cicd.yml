@@ -11,7 +11,7 @@ on:
 
 env:
   DATABRICKS_HOST: https://adb-984752964297111.11.azuredatabricks.net
-  DATABRICKS_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
   
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          token: ${{ secrets.WORKFLOW_TOKEN }}
+          token: ${{ secrets.DATABRICKS_TOKEN }}
       - uses: databricks/setup-cli@v0.212.2
       - name: Convert Project Name to Only Alphanumeric Characters
         run: |
