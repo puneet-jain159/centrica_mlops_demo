@@ -23,25 +23,25 @@ resources:
           job_cluster_key: create_batch_inference
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/feature_store_inference_input.py
-          base_parameters:
-            env: ${bundle.target}
-            # TODO: Update training_data_path
-            training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
-            output_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.feature_store_inference_input
-            # git source information of current ML resource deployment. It will be persisted as part of the workflow run
-            git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+            base_parameters:
+              env: ${bundle.target}
+              # TODO: Update training_data_path
+              training_data_path: /databricks-datasets/nyctaxi-with-zipcodes/subsampled
+              output_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.feature_store_inference_input
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
 
         - task_key: batch_inference_job
           job_cluster_key: create_batch_inference
           notebook_task:
             notebook_path: ../deployment/batch_inference/notebooks/BatchInference.py
-          base_parameters:
-            env: ${bundle.target}
-            input_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.feature_store_inference_input  # TODO: create input table for inference
-            output_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.predictions
-            model_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo
-            # git source information of current ML resource deployment. It will be persisted as part of the workflow run
-            git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
+            base_parameters:
+              env: ${bundle.target}
+              input_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.feature_store_inference_input  # TODO: create input table for inference
+              output_table_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo.predictions
+              model_name: ${var.catalog_name}.${bundle.target}_centrica_mlops_demo
+              # git source information of current ML resource deployment. It will be persisted as part of the workflow run
+              git_source_info: url:${bundle.git.origin_url}; branch:${bundle.git.branch}; commit:${bundle.git.commit}
           depends_on:
             - task_key: Create-Inference-Table
 
